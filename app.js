@@ -1578,6 +1578,7 @@ function handleEditPartySubmit(e) {
   };
 
   function getDocList(type) {
+    if (type === "Sales Invoice") return appState.invoices;
     const key = DEST_STATE_MAPS[type];
     if (!appState[key]) appState[key] = [];
     return appState[key];
@@ -1870,7 +1871,7 @@ function handleEditPartySubmit(e) {
       const doc = list[index];
 
       // Credit back balance
-      const partyObj = appState.parties.find(p => p.name === doc.partyName);
+      const partyObj = appState.parties.find(p => p.name === (doc.partyName || doc.customerName));
       if (partyObj) {
         if (type === "Purchase Invoice") {
           partyObj.balance += doc.grandTotal;
@@ -1878,7 +1879,19 @@ function handleEditPartySubmit(e) {
           partyObj.balance += doc.grandTotal;
         } else if (type === "Purchase Return" || type === "Debit Note") {
           partyObj.balance -= doc.grandTotal;
+        } else if (type === "Sales Invoice") {
+          partyObj.balance = Math.max(0, partyObj.balance - doc.grandTotal);
         }
+      }
+
+      // Restock inventory for items if it is a Sales Invoice
+      if (type === "Sales Invoice") {
+        doc.items.forEach(item => {
+          const itemObj = appState.items.find(i => i.name === item.itemName);
+          if (itemObj) {
+            itemObj.stock += item.qty;
+          }
+        });
       }
 
       logActivity(`Deleted ${type}: ${doc.id}`, "Warning");
@@ -2729,8 +2742,9 @@ function handleEditAccountSubmit(e) {
     const company = appState.companies[appState.activeCompanyIndex];
 
     const partyType = type.includes("Purchase") ? "Supplier" : "Customer";
-    const partyObj = appState.parties.find(p => p.name === doc.partyName) || {
-      name: doc.partyName, email: "billing@client.com", phone: "N/A", taxId: "N/A", address: "N/A"
+    const nameToFind = doc.partyName || doc.customerName;
+    const partyObj = appState.parties.find(p => p.name === nameToFind) || {
+      name: nameToFind || "N/A", email: "billing@client.com", phone: "N/A", taxId: "N/A", address: "N/A"
     };
 
     const curSymbol = company.currency === "INR" ? "₹" : "$";
@@ -2811,7 +2825,112 @@ function handleEditAccountSubmit(e) {
   `;
 
     openModal("modal-view-invoice");
+
+    // Dynamically add Share button next to Print button inside the modal header
+    const modal = document.getElementById("modal-view-invoice");
+    if (modal) {
+      const headerButtons = modal.querySelector(".modal-header .modal-close-btn")?.parentElement;
+      if (headerButtons) {
+        // Remove any old share button
+        const oldShare = headerButtons.querySelector(".share-btn");
+        if (oldShare) oldShare.remove();
+
+        // Create new Share button
+        const shareBtn = document.createElement("button");
+        shareBtn.className = "table-btn share-btn";
+        shareBtn.style.display = "inline-flex";
+        shareBtn.style.alignItems = "center";
+        shareBtn.style.gap = "6px";
+        shareBtn.innerHTML = `<i data-lucide="share-2" style="width:14px; height:14px;"></i><span>Share</span>`;
+        shareBtn.onclick = (e) => triggerShareMenu(e, type, doc.id);
+        
+        // Insert before the close button
+        const closeBtn = headerButtons.querySelector(".modal-close-btn");
+        headerButtons.insertBefore(shareBtn, closeBtn);
+        lucide.createIcons();
+      }
+    }
   }
+
+  function triggerShareMenu(event, type, docId) {
+    event.stopPropagation();
+    
+    const existing = document.getElementById("share-dropdown-menu");
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
+    const list = getDocList(type);
+    const doc = list.find(d => d.id === docId);
+    if (!doc) return;
+    
+    const company = appState.companies[appState.activeCompanyIndex];
+    const curSymbol = company.currency === "INR" ? "₹" : "$";
+    const shareText = `Please find the ${type} ${doc.id} from ${company.name} for ${curSymbol}${doc.grandTotal.toFixed(2)}.`;
+
+    const dropdown = document.createElement("div");
+    dropdown.id = "share-dropdown-menu";
+    dropdown.style.cssText = `
+      position: absolute;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 6px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 160px;
+    `;
+
+    const btnRect = event.currentTarget.getBoundingClientRect();
+    dropdown.style.top = `${btnRect.bottom + window.scrollY + 6}px`;
+    dropdown.style.left = `${btnRect.left + window.scrollX - 60}px`;
+
+    const emailLink = `mailto:?subject=${encodeURIComponent(type + ' ' + doc.id)}&body=${encodeURIComponent(shareText)}`;
+    const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+
+    dropdown.innerHTML = `
+      <a href="${emailLink}" class="dropdown-item">
+        <i data-lucide="mail" style="width:14px; height:14px;"></i> Share via Email
+      </a>
+      <a href="${whatsappLink}" target="_blank" class="dropdown-item">
+        <i data-lucide="message-square" style="width:14px; height:14px;"></i> Share via WhatsApp
+      </a>
+      <button class="dropdown-item" id="btn-copy-share">
+        <i data-lucide="copy" style="width:14px; height:14px;"></i> Copy Details
+      </button>
+    `;
+
+    document.body.appendChild(dropdown);
+    lucide.createIcons();
+
+    // Copy Details handler
+    document.getElementById("btn-copy-share").addEventListener("click", () => {
+      navigator.clipboard.writeText(shareText).then(() => {
+        triggerToast("Details copied to clipboard", "success");
+        dropdown.remove();
+      }).catch(() => {
+        triggerToast("Copy failed", "error");
+      });
+    });
+
+    // Close dropdown on click outside
+    const closeMenu = (e) => {
+      if (!dropdown.contains(e.target) && e.target !== event.currentTarget) {
+        dropdown.remove();
+        document.removeEventListener("click", closeMenu);
+      }
+    };
+    // Defer adding the listener so it doesn't trigger immediately
+    setTimeout(() => {
+      document.addEventListener("click", closeMenu);
+    }, 0);
+  }
+
+  window.triggerShareMenu = triggerShareMenu;
 
   function printInvoice() {
     const content = document.getElementById("print-area").innerHTML;
@@ -3479,8 +3598,49 @@ function highlightActiveSidebarLink() {
   });
 }
 
+function updateDocumentTitle() {
+  const currentPath = window.location.pathname.split('/').pop() || "index.html";
+  const pageNameMap = {
+    "index.html": "Dashboard",
+    "items.html": "Items Catalog",
+    "customers.html": "Customers",
+    "suppliers.html": "Suppliers",
+    "quotations.html": "Quotations",
+    "proformas.html": "Proformas",
+    "sales-invoices.html": "Sales Invoices",
+    "delivery-challans.html": "Delivery Challans",
+    "credit-notes.html": "Credit Notes",
+    "debit-notes.html": "Debit Notes",
+    "purchase-orders.html": "Purchase Orders",
+    "purchase-invoices.html": "Purchase Invoices",
+    "purchase-returns.html": "Purchase Returns",
+    "sales-returns.html": "Sales Returns",
+    "payments-in.html": "Payments In",
+    "payments-out.html": "Payments Out",
+    "expenses.html": "Expenses",
+    "accounts.html": "Accounts & Ledgers",
+    "reports.html": "Reports & Analytics",
+    "profile.html": "User Profile",
+    "settings.html": "Settings",
+    "activity-log.html": "Audit Logs",
+    "notifications.html": "Notifications",
+    "support.html": "Help & Support",
+    "subscription.html": "Subscription Plan",
+    "login.html": "Log In",
+    "onboarding.html": "Onboarding Setup",
+    "add-account.html": "Add Ledger Account",
+    "transfer-funds.html": "Transfer Funds",
+    "create-quotation.html": "Create Quotation",
+    "adjust-stock.html": "Adjust Stock"
+  };
+
+  const pageTitle = pageNameMap[currentPath] || "Premium Billing";
+  document.title = `Zenbill - ${pageTitle}`;
+}
+
   // Initial Launch checks
   window.addEventListener("DOMContentLoaded", () => {
+    updateDocumentTitle();
     initDatabase();
 
     if (appState.sidebarCollapsed) {

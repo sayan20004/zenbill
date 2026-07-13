@@ -510,13 +510,22 @@ input, select, textarea, button {
 }
 
 .nav-link.active {
-  background-color: rgba(var(--primary-rgb), 0.08);
-  color: var(--primary);
+  background-color: var(--primary);
+  color: var(--text-white);
   font-weight: 600;
 }
 
 .nav-link.active svg {
-  stroke: var(--primary);
+  stroke: var(--text-white);
+}
+
+.nav-link.active:hover {
+  background-color: var(--primary-hover);
+  color: var(--text-white);
+}
+
+.nav-link.active:hover svg {
+  stroke: var(--text-white);
 }
 
 /* Nested Submenu styles */
@@ -676,6 +685,9 @@ body.sidebar-collapsed .app-content-wrapper {
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.3px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .header-actions {
@@ -2235,5 +2247,33 @@ body.sidebar-collapsed .app-content-wrapper {
   .auth-divider-line span {
     background: #ffffff;
   }
+}
+
+.dropdown-item {
+  transition: background-color 0.2s, color 0.2s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  box-sizing: border-box;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(var(--primary-rgb), 0.04);
+  color: var(--primary) !important;
+}
+
+.dropdown-item:hover svg {
+  stroke: var(--primary);
 }
 
