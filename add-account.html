@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme Inc. - Add Bank/Cash Account</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <div class="app-shell">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="company-selector" onclick="openWorkspaceSwitcherModal()">
+          <div class="company-logo-badge" id="shell-company-logo">A</div>
+          <div class="company-info">
+            <div class="company-name" id="shell-company-name">Acme Inc.</div>
+            <div class="company-role" id="shell-company-industry">SaaS & Software</div>
+          </div>
+          <i data-lucide="chevrons-up-down"></i>
+        </div>
+      </div>
+
+      <div class="sidebar-nav-container">
+        <span class="nav-label">Core Operations</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="items.html">
+              <i data-lucide="package"></i>
+              <span>Item Management</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="customers.html">
+              <i data-lucide="users"></i>
+              <span>Customer Management</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="suppliers.html">
+              <i data-lucide="truck"></i>
+              <span>Supplier Management</span>
+            </a>
+          </li>
+        </ul>
+
+        <span class="nav-label">Transactions</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <div class="nav-link submenu-toggle" onclick="toggleSubmenu('submenu-sales', this)">
+              <span style="display:flex; align-items:center; gap:12px;">
+                <i data-lucide="trending-up"></i>
+                <span>Sales</span>
+              </span>
+              <i data-lucide="chevron-right" class="submenu-chevron"></i>
+            </div>
+            <ul class="nav-submenu" id="submenu-sales">
+              <li><a class="submenu-link" href="quotations.html">Quotation</a></li>
+              <li><a class="submenu-link" href="proformas.html">Proforma Invoice</a></li>
+              <li><a class="submenu-link" href="sales-invoices.html">Sales Invoice</a></li>
+              <li><a class="submenu-link" href="payments-in.html">Payment In</a></li>
+              <li><a class="submenu-link" href="sales-returns.html">Sales Return</a></li>
+              <li><a class="submenu-link" href="credit-notes.html">Credit Note</a></li>
+              <li><a class="submenu-link" href="delivery-challans.html">Delivery Challan</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <div class="nav-link submenu-toggle" onclick="toggleSubmenu('submenu-purchase', this)">
+              <span style="display:flex; align-items:center; gap:12px;">
+                <i data-lucide="shopping-cart"></i>
+                <span>Purchase</span>
+              </span>
+              <i data-lucide="chevron-right" class="submenu-chevron"></i>
+            </div>
+            <ul class="nav-submenu" id="submenu-purchase">
+              <li><a class="submenu-link" href="purchase-orders.html">Purchase Order</a></li>
+              <li><a class="submenu-link" href="purchase-invoices.html">Purchase Invoice</a></li>
+              <li><a class="submenu-link" href="payments-out.html">Payment Out</a></li>
+              <li><a class="submenu-link" href="purchase-returns.html">Purchase Return</a></li>
+              <li><a class="submenu-link" href="debit-notes.html">Debit Note</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <span class="nav-label">Management</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link" href="inventory.html">
+              <i data-lucide="database"></i>
+              <span>Inventory Management</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="accounts.html">
+              <i data-lucide="wallet"></i>
+              <span>Accounts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="expenses.html">
+              <i data-lucide="arrow-right-left"></i>
+              <span>Other Transactions</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="reports.html">
+              <i data-lucide="bar-chart-3"></i>
+              <span>Reports</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="settings.html">
+              <i data-lucide="settings"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar" id="shell-user-avatar">AD</div>
+        <div class="user-details">
+          <div class="user-name" id="shell-user-name">Admin Admin</div>
+          <div class="user-email" id="shell-user-email">admin@acme.com</div>
+        </div>
+        <button class="logout-btn" onclick="handleLogout()" title="Log out">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT AREA -->
+    <div class="app-content-wrapper">
+      <header class="app-header">
+        <div class="header-title-container">
+            <button class="icon-btn mobile-menu-btn" onclick="toggleMobileSidebar()" title="Toggle Sidebar"><i data-lucide="menu"></i></button>
+          <span class="header-title" id="active-page-title">Add Bank/Cash Account</span>
+        </div>
+        <div class="header-actions">
+          <button class="quick-create-btn" onclick="openQuickCreateModal()">
+            <i data-lucide="plus"></i>
+            <span>Quick Create</span>
+          </button>
+          <button class="icon-btn" onclick="window.location.href='notifications.html'" title="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="badge-dot" id="notifications-badge" style="display:none;"></span>
+          </button>
+          <button class="icon-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <i data-lucide="sun" id="theme-icon-sun"></i>
+            <i data-lucide="moon" id="theme-icon-moon" style="display:none;"></i>
+          </button>
+          <button class="icon-btn" onclick="window.location.href='profile.html'" title="User Profile">
+            <i data-lucide="user"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <div id="page-add-account" class="main-page-view active">
+          <div class="content-card" style="max-width: 600px;">
+            <div class="content-card-header">
+              <h2>Register Bank/Cash Account</h2>
+              <button class="table-btn" onclick="window.location.href='accounts.html'">
+                <i data-lucide="arrow-left" style="width:14px; height:14px; margin-right:4px;"></i> Back to Accounts
+              </button>
+            </div>
+            
+            <form id="form-add-account-page" onsubmit="handleAddAccountPageSubmit(event)">
+              <div class="form-grid">
+                <div class="form-group col-span-2">
+                  <label class="form-label" for="page-account-name-input">Account Name / Title</label>
+                  <input type="text" id="page-account-name-input" class="form-control" placeholder="e.g. HDFC Business Account" required>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="page-account-type-select">Account Type</label>
+                  <select id="page-account-type-select" class="form-control form-select" required>
+                    <option value="Bank">Bank Account</option>
+                    <option value="Cash">Cash Ledger</option>
+                    <option value="Credit Card">Credit Card</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label" for="page-account-balance-input">Opening Balance</label>
+                  <input type="number" step="0.01" id="page-account-balance-input" class="form-control" placeholder="0.00" value="0.00" required>
+                </div>
+                
+                <div class="form-group col-span-2">
+                  <label class="form-label" for="page-account-number-input">Account details (Account Number, Bank branch)</label>
+                  <input type="text" id="page-account-number-input" class="form-control" placeholder="e.g. Acc: 501004523912, IFSC: HDFC0000124" required>
+                </div>
+              </div>
+
+              <div style="margin-top:24px; display:flex; gap:12px; justify-content:flex-end;">
+                <button type="button" class="table-btn" onclick="window.location.href='accounts.html'">Cancel</button>
+                <button type="submit" class="quick-create-btn">Create Account</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- WORKSPACE SWITCHER MODAL -->
+  <div class="modal-overlay" id="modal-workspace-switcher">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Workspaces</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-workspace-switcher')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Active Workspace Company</label>
+          <div id="workspace-companies-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="table-btn" onclick="closeModal('modal-workspace-switcher')">Close</button>
+        <button class="quick-create-btn" onclick="window.location.href='onboarding.html'">
+          <i data-lucide="plus"></i> Create New Workspace
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTION SHORTCUTS MODAL -->
+  <div class="modal-overlay" id="modal-quick-create">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Quick Action Panel</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-quick-create')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-grid">
+          <div class="shortcut-card" onclick="window.location.href='sales-invoices.html'">
+            <i data-lucide="file-text"></i>
+            <span class="shortcut-label">Create Sales Invoice</span>
+          </div>
+          <div class="shortcut-card" onclick="window.location.href='items.html'">
+            <i data-lucide="package-plus"></i>
+            <span class="shortcut-label">Add Product Item</span>
+          </div>
+          <div class="shortcut-card" onclick="window.location.href='customers.html'">
+            <i data-lucide="user-plus"></i>
+            <span class="shortcut-label">Add Customer</span>
+          </div>
+          <div class="shortcut-card" onclick="window.location.href='suppliers.html'">
+            <i data-lucide="truck"></i>
+            <span class="shortcut-label">Add Supplier</span>
+          </div>
+          <div class="shortcut-card" onclick="window.location.href='settings.html'">
+            <i data-lucide="sliders"></i>
+            <span class="shortcut-label">Tax Preferences</span>
+          </div>
+          <div class="shortcut-card" onclick="triggerToast('Live support chat session active', 'info')">
+            <i data-lucide="help-circle"></i>
+            <span class="shortcut-label">Help Desk Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <div class="mobile-bottom-nav">
+    <a href="index.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Home</span>
+    </a>
+    <a href="items.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="package"></i>
+      <span>Items</span>
+    </a>
+    <a href="sales-invoices.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="trending-up"></i>
+      <span>Sales</span>
+    </a>
+    <a href="accounts.html" class="mobile-bottom-nav-item active">
+      <i data-lucide="wallet"></i>
+      <span>Accounts</span>
+    </a>
+    <a href="profile.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="user"></i>
+      <span>Profile</span>
+    </a>
+  </div>
+</body>
+</html>

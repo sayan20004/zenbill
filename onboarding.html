@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme Inc. - Premium Billing & Document Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <!-- ================= COMPANY CREATION VIEW ================= -->
+  <div id="view-onboarding" class="view-container">
+    <div class="auth-wrapper">
+      <div class="auth-card" style="max-width:540px;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow Business</span>
+          </div>
+          <h2 class="auth-title">Create your company</h2>
+          <p class="auth-subtitle">Configure your workspace profile to configure invoices.</p>
+        </div>
+
+        <div class="step-progress">
+          <div id="step-dot-1" class="step-dot active">1</div>
+          <div id="step-dot-2" class="step-dot">2</div>
+        </div>
+
+        <form id="form-onboarding" onsubmit="handleOnboardingSubmit(event)">
+          <!-- STEP 1: Basic Information -->
+          <div id="onboarding-step-1">
+            <div class="auth-form-group">
+              <label class="auth-label" for="company-name-input">Company Name</label>
+              <div class="auth-input-wrapper">
+                <i data-lucide="briefcase"></i>
+                <input type="text" id="company-name-input" class="auth-input" placeholder="e.g. Acme Corporation" required>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="auth-form-group">
+                <label class="auth-label" for="company-industry">Industry</label>
+                <select id="company-industry" class="auth-input" style="padding-left:14px; cursor:pointer;" required>
+                  <option value="SaaS & Software">SaaS & Software</option>
+                  <option value="Retail & Trade">Retail & Trade</option>
+                  <option value="Consulting & Agency">Consulting & Agency</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Other Business">Other Business</option>
+                </select>
+              </div>
+
+              <div class="auth-form-group">
+                <label class="auth-label" for="company-currency">Currency</label>
+                <select id="company-currency" class="auth-input" style="padding-left:14px; cursor:pointer;" required>
+                  <option value="USD">USD ($)</option>
+                  <option value="INR">INR (₹)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="auth-button" style="margin-top:20px;" onclick="goToOnboardingStep(2)">
+              Next step <i data-lucide="arrow-right" style="width:16px; height:16px;"></i>
+            </button>
+          </div>
+
+          <!-- STEP 2: Address & Tax details -->
+          <div id="onboarding-step-2" style="display:none;">
+            <div class="auth-form-group">
+              <label class="auth-label" for="company-tax-id">GSTIN / Tax ID</label>
+              <div class="auth-input-wrapper">
+                <i data-lucide="hash"></i>
+                <input type="text" id="company-tax-id" class="auth-input" placeholder="e.g. 27AAAAA0000A1Z1" required>
+              </div>
+            </div>
+
+            <div class="auth-form-group">
+              <label class="auth-label" for="company-address">Company Address</label>
+              <textarea id="company-address" class="auth-input" style="padding-left:14px; height:80px; resize:none;" placeholder="Street name, Suite, City, ZIP code" required></textarea>
+            </div>
+
+            <div class="form-grid">
+              <button type="button" class="auth-button" style="background-color:transparent; border:1px solid var(--border-light); color:var(--text-primary);" onclick="goToOnboardingStep(1)">
+                Back
+              </button>
+              <button type="submit" class="auth-button">
+                Finish Setup
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

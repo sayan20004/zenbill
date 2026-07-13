@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme Inc. - Premium Billing & Document Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+        
+        <div class="sidebar-header">
+          <div class="company-selector" onclick="openWorkspaceSwitcherModal()">
+            <div class="company-logo-badge" id="shell-company-logo">A</div>
+            <div class="company-info">
+              <div class="company-name" id="shell-company-name">Acme Inc.</div>
+              <div class="company-role" id="shell-company-industry">SaaS & Software</div>
+            </div>
+            <i data-lucide="chevrons-up-down"></i>
+          </div>
+        </div>
+
+        <div class="sidebar-nav-container">
+          <!-- NAVIGATION LINKS -->
+          <span class="nav-label">Core Operations</span>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="items.html">
+                <i data-lucide="package"></i>
+                <span>Item Management</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="customers.html">
+                <i data-lucide="users"></i>
+                <span>Customer Management</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="suppliers.html">
+                <i data-lucide="truck"></i>
+                <span>Supplier Management</span>
+              </a>
+            </li>
+          </ul>
+
+          <span class="nav-label">Transactions</span>
+          <ul class="nav-list">
+            <!-- Sales Submenu -->
+            <li class="nav-item">
+              <div class="nav-link submenu-toggle" onclick="toggleSubmenu('submenu-sales', this)">
+                <span style="display:flex; align-items:center; gap:12px;">
+                  <i data-lucide="trending-up"></i>
+                  <span>Sales</span>
+                </span>
+                <i data-lucide="chevron-right" class="submenu-chevron"></i>
+              </div>
+              <ul class="nav-submenu" id="submenu-sales">
+                <li><a class="submenu-link" href="quotations.html">Quotation</a></li>
+                <li><a class="submenu-link" href="proformas.html">Proforma Invoice</a></li>
+                <li><a class="submenu-link" href="sales-invoices.html">Sales Invoice</a></li>
+                <li><a class="submenu-link" href="payments-in.html">Payment In</a></li>
+                <li><a class="submenu-link" href="sales-returns.html">Sales Return</a></li>
+                <li><a class="submenu-link" href="credit-notes.html">Credit Note</a></li>
+                <li><a class="submenu-link" href="delivery-challans.html">Delivery Challan</a></li>
+              </ul>
+            </li>
+            <!-- Purchase Submenu -->
+            <li class="nav-item">
+              <div class="nav-link submenu-toggle" onclick="toggleSubmenu('submenu-purchase', this)">
+                <span style="display:flex; align-items:center; gap:12px;">
+                  <i data-lucide="shopping-cart"></i>
+                  <span>Purchase</span>
+                </span>
+                <i data-lucide="chevron-right" class="submenu-chevron"></i>
+              </div>
+              <ul class="nav-submenu" id="submenu-purchase">
+                <li><a class="submenu-link" href="purchase-orders.html">Purchase Order</a></li>
+                <li><a class="submenu-link" href="purchase-invoices.html">Purchase Invoice</a></li>
+                <li><a class="submenu-link" href="payments-out.html">Payment Out</a></li>
+                <li><a class="submenu-link" href="purchase-returns.html">Purchase Return</a></li>
+                <li><a class="submenu-link" href="debit-notes.html">Debit Note</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <span class="nav-label">Management</span>
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a class="nav-link" href="inventory.html">
+                <i data-lucide="database"></i>
+                <span>Inventory Management</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="accounts.html">
+                <i data-lucide="wallet"></i>
+                <span>Accounts</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="expenses.html" class="submenu-link active">
+                <i data-lucide="arrow-right-left"></i>
+                <span>Other Transactions</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="reports.html">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Reports</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="settings.html">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- SIDEBAR FOOTER -->
+        <div class="sidebar-footer">
+          <div class="user-avatar" id="shell-user-avatar">AD</div>
+          <div class="user-details">
+            <div class="user-name" id="shell-user-name">Admin Admin</div>
+            <div class="user-email" id="shell-user-email">admin@acme.com</div>
+          </div>
+          <button class="logout-btn" onclick="handleLogout()" title="Log out">
+            <i data-lucide="log-out"></i>
+          </button>
+        </div>
+
+      </aside>
+    <div class="app-content-wrapper">
+      <header class="app-header">
+          <div class="header-title-container">
+            <button class="icon-btn mobile-menu-btn" onclick="toggleMobileSidebar()" title="Toggle Sidebar"><i data-lucide="menu"></i></button>
+            <span class="header-title" id="active-page-title">Other Txns</span>
+          </div>
+          <div class="header-actions">
+            
+            <button class="quick-create-btn" onclick="openQuickCreateModal()">
+              <i data-lucide="plus"></i>
+              <span>Quick Create</span>
+            </button>
+
+            <button class="icon-btn" onclick="window.location.href='notifications.html'" title="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="badge-dot" id="notifications-badge" style="display:none;"></span>
+            </button>
+
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+              <i data-lucide="sun" id="theme-icon-sun"></i>
+              <i data-lucide="moon" id="theme-icon-moon" style="display:none;"></i>
+            </button>
+
+            <button class="icon-btn" onclick="window.location.href='profile.html'" title="User Profile">
+              <i data-lucide="user"></i>
+            </button>
+
+          </div>
+        </header>
+      <main class="app-main">
+        <div id="page-other-txns" class="main-page-view active">
+          <div class="content-card">
+              <div class="content-card-header">
+                <h2>Other Transactions & Expenses</h2>
+                <button class="quick-create-btn" onclick="openRecordExpenseModal()">
+                  <i data-lucide="plus"></i>
+                  <span>Record Expense</span>
+                </button>
+              </div>
+              <div class="action-bar">
+                <div class="search-input-wrapper">
+                  <i data-lucide="search"></i>
+                  <input type="text" class="search-input" id="search-expenses-input" placeholder="Search expense transactions..." onkeyup="filterGenericTable('expenses-table-body', this.value)">
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-grid-table">
+                  <thead>
+                    <tr>
+                      <th>Expense ID</th>
+                      <th>Date</th>
+                      <th>Category</th>
+                      <th>Payment Mode</th>
+                      <th>Description</th>
+                      <th>Amount Paid</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="expenses-table-body">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <!-- ================= MODALS SYSTEM ================= -->
+  
+  <!-- QUICK ACTION SHORTCUTS MODAL -->
+  <div class="modal-overlay" id="modal-quick-create">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Quick Action Panel</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-quick-create')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-grid">
+          <div class="shortcut-card" onclick="closeAndOpen('modal-quick-create', openCreateInvoiceModal)">
+            <i data-lucide="file-text"></i>
+            <span class="shortcut-label">Create Sales Invoice</span>
+          </div>
+          <div class="shortcut-card" onclick="closeAndOpen('modal-quick-create', openAddItemModal)">
+            <i data-lucide="package-plus"></i>
+            <span class="shortcut-label">Add Product Item</span>
+          </div>
+          <div class="shortcut-card" onclick="closeAndOpen('modal-quick-create', function(){ openAddPartyModal('Customer') })">
+            <i data-lucide="user-plus"></i>
+            <span class="shortcut-label">Add Customer</span>
+          </div>
+          <div class="shortcut-card" onclick="closeAndOpen('modal-quick-create', function(){ openAddPartyModal('Supplier') })">
+            <i data-lucide="truck"></i>
+            <span class="shortcut-label">Add Supplier</span>
+          </div>
+          <div class="shortcut-card" onclick="closeAndOpen('modal-quick-create', function(){ switchMainPage('page-settings') })">
+            <i data-lucide="sliders"></i>
+            <span class="shortcut-label">Tax Preferences</span>
+          </div>
+          <div class="shortcut-card" onclick="triggerToast('Live support chat session active', 'info')">
+            <i data-lucide="help-circle"></i>
+            <span class="shortcut-label">Help Desk Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT ITEM MODAL -->
+  <div class="modal-overlay" id="modal-add-item">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Catalog New Product</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-add-item')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-add-item" onsubmit="handleAddItemSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="item-name">Item Name</label>
+              <input type="text" id="item-name" class="form-control" placeholder="e.g. Premium Enterprise Subscription" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="item-sku">SKU / Code</label>
+              <input type="text" id="item-sku" class="form-control" placeholder="e.g. SKU-ENT-100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="item-category">Category</label>
+              <input type="text" id="item-category" class="form-control" placeholder="e.g. Services, Goods" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="item-purchase-price">Purchase Price</label>
+              <input type="number" step="0.01" id="item-purchase-price" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="item-sales-price">Sales Price</label>
+              <input type="number" step="0.01" id="item-sales-price" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="item-stock">Initial Stock Level</label>
+              <input type="number" id="item-stock" class="form-control" placeholder="0" value="0" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-add-item')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD PARTY MODAL (Customer/Supplier) -->
+  <div class="modal-overlay" id="modal-add-party">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="party-modal-title">Register Customer</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-add-party')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-add-party" onsubmit="handlePartySubmit(event)">
+        <input type="hidden" id="party-type-input" value="Customer">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="party-name" id="party-label-name">Customer Name</label>
+              <input type="text" id="party-name" class="form-control" placeholder="Legal entity name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="party-email">Email Address</label>
+              <input type="email" id="party-email" class="form-control" placeholder="billing@company.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="party-phone">Phone Number</label>
+              <input type="tel" id="party-phone" class="form-control" placeholder="10-digit mobile" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="party-tax-id">Tax ID / GSTIN</label>
+              <input type="text" id="party-tax-id" class="form-control" placeholder="e.g. 27AAAAA0000A1Z1" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="party-address">Billing Address</label>
+              <textarea id="party-address" class="form-control" style="height:60px; resize:none;" placeholder="Complete legal address for invoice display" required></textarea>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="party-balance">Opening Balance</label>
+              <input type="number" step="0.01" id="party-balance" class="form-control" value="0.00" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-add-party')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Register Entity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SALES INVOICE CREATOR MODAL -->
+  <div class="modal-overlay" id="modal-create-invoice">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Sales Invoice</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-create-invoice')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-create-invoice" onsubmit="handleCreateInvoiceSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="invoice-customer-select">Select Customer</label>
+              <select id="invoice-customer-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="invoice-date-input">Invoice Date</label>
+              <input type="date" id="invoice-date-input" class="form-control" required>
+            </div>
+          </div>
+
+          <h4 style="margin-top:24px; margin-bottom:12px; font-size:14px; font-weight:700;">Line Items</h4>
+          
+          <table class="invoice-items-table">
+            <thead>
+              <tr>
+                <th style="width: 40%;">Product / Service</th>
+                <th style="width: 15%;">Unit Price</th>
+                <th style="width: 15%;">Quantity</th>
+                <th style="width: 15%;">Taxes</th>
+                <th style="width: 15%;">Total</th>
+                <th style="width: 50px;"></th>
+              </tr>
+            </thead>
+            <tbody id="invoice-items-rows">
+              <!-- JS will inject rows here dynamically -->
+            </tbody>
+          </table>
+
+          <button type="button" class="table-btn" style="margin-bottom:20px;" onclick="addInvoiceLineRow()">
+            <i data-lucide="plus" style="width:14px; height:14px; margin-right:4px;"></i> Add Row
+          </button>
+
+          <div class="invoice-totals-section">
+            <div class="invoice-totals-box">
+              <div class="totals-row">
+                <span>Sub Total:</span>
+                <span id="invoice-sub-total">$0.00</span>
+              </div>
+              <div class="totals-row">
+                <span>Taxes Total (GST):</span>
+                <span id="invoice-tax-total">$0.00</span>
+              </div>
+              <div class="totals-row grand-total">
+                <span>Grand Total:</span>
+                <span id="invoice-grand-total">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-create-invoice')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Save Invoice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PRINT & VIEW INVOICE MODAL -->
+  <div class="modal-overlay" id="modal-view-invoice">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 class="modal-title">Invoice Details</h3>
+        <div style="display:flex; gap:8px;">
+          <button class="table-btn" onclick="printInvoice()">
+            <i data-lucide="printer"></i>
+            <span>Print Invoice</span>
+          </button>
+          <button class="modal-close-btn" onclick="closeModal('modal-view-invoice')">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:0; background:#f3f4f6;">
+        <div id="print-area" class="invoice-print-container">
+          <!-- Dynamically populated printed layout -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE SWITCHER MODAL -->
+  <div class="modal-overlay" id="modal-workspace-switcher">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Workspaces</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-workspace-switcher')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Active Workspace Company</label>
+          <div id="workspace-companies-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="table-btn" onclick="closeModal('modal-workspace-switcher')">Close</button>
+        <button class="quick-create-btn" onclick="closeAndOpen('modal-workspace-switcher', function(){ switchOnboardingView() })">
+          <i data-lucide="plus"></i> Create New Workspace
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMIZE COLUMNS MODAL -->
+  <div class="modal-overlay" id="modal-customize-columns">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Customize Table Columns</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-customize-columns')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-secondary); font-size:13px; margin-bottom:16px;">Choose columns to display on the outline grid:</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <label class="auth-checkbox">
+            <input type="checkbox" checked disabled>
+            <span>Header (Required)</span>
+          </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" id="col-cb-type" checked onchange="toggleTableColumn('type', this.checked)">
+            <span>Section Type</span>
+          </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" id="col-cb-status" checked onchange="toggleTableColumn('status', this.checked)">
+            <span>Status Badge</span>
+          </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" id="col-cb-target" checked onchange="toggleTableColumn('target', this.checked)">
+            <span>Target Value</span>
+          </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" id="col-cb-limit" checked onchange="toggleTableColumn('limit', this.checked)">
+            <span>Limit Value</span>
+          </label>
+          <label class="auth-checkbox">
+            <input type="checkbox" id="col-cb-reviewer" checked onchange="toggleTableColumn('reviewer', this.checked)">
+            <span>Reviewer Info</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="quick-create-btn" onclick="closeModal('modal-customize-columns')">Done</button>
+      </div>
+  </div>
+
+  <!-- RECORD PAYMENT IN/OUT MODAL -->
+  <div class="modal-overlay" id="modal-record-payment">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="payment-modal-title-main">Record Payment</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-record-payment')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-record-payment" onsubmit="handleRecordPaymentSubmit(event)">
+        <input type="hidden" id="payment-type-input-main" value="Payment In">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="payment-party-select" id="payment-label-party">Select Customer</label>
+              <select id="payment-party-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="payment-amount-input">Amount</label>
+              <input type="number" step="0.01" id="payment-amount-input" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="payment-date-input">Payment Date</label>
+              <input type="date" id="payment-date-input" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="payment-mode-select">Payment Mode</label>
+              <select id="payment-mode-select" class="form-control form-select">
+                <option value="Cash">Cash</option>
+                <option value="Bank">Bank Account</option>
+                <option value="UPI">UPI</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="payment-ref-input">Reference / Txn No</label>
+              <input type="text" id="payment-ref-input" class="form-control" placeholder="e.g. TXN998822">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-record-payment')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Record Receipt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADJUST STOCK LEVEL MODAL -->
+  <div class="modal-overlay" id="modal-adjust-stock">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Inventory Stock Adjustment</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-adjust-stock')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-adjust-stock" onsubmit="handleStockAdjustmentSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="adjust-item-select">Select Catalog Product</label>
+              <select id="adjust-item-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adjust-type-select">Adjustment Type</label>
+              <select id="adjust-type-select" class="form-control form-select">
+                <option value="Add">Add (+) Stock</option>
+                <option value="Reduce">Reduce (-) Stock</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="adjust-qty-input">Quantity</label>
+              <input type="number" id="adjust-qty-input" class="form-control" min="1" value="1" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="adjust-remarks-input">Adjustment Remarks / Reasons</label>
+              <input type="text" id="adjust-remarks-input" class="form-control" placeholder="e.g. Physical inventory check correction" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-adjust-stock')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Apply Adjustment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADD ACCOUNT MODAL -->
+  <div class="modal-overlay" id="modal-add-account">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Create Cash / Bank Account</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-add-account')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-add-account" onsubmit="handleAddAccountSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="account-name-input">Account Name</label>
+              <input type="text" id="account-name-input" class="form-control" placeholder="e.g. Chase Main Operating Bank" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="account-type-select">Account Type</label>
+              <select id="account-type-select" class="form-control form-select">
+                <option value="Bank">Bank Account</option>
+                <option value="Cash">Cash Account</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="account-number-input">Account / Reference ID</label>
+              <input type="text" id="account-number-input" class="form-control" placeholder="e.g. ACC-4422-99">
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="account-balance-input">Opening balance</label>
+              <input type="number" step="0.01" id="account-balance-input" class="form-control" value="0.00" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-add-account')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TRANSFER FUNDS MODAL -->
+  <div class="modal-overlay" id="modal-transfer-funds">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Accounts Balance Transfer</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-transfer-funds')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-transfer-funds" onsubmit="handleTransferFundsSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="transfer-from-select">Debit Source Account</label>
+              <select id="transfer-from-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="transfer-to-select">Credit Target Account</label>
+              <select id="transfer-to-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="transfer-amount-input">Amount</label>
+              <input type="number" step="0.01" id="transfer-amount-input" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="transfer-date-input">Transfer Date</label>
+              <input type="date" id="transfer-date-input" class="form-control" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="transfer-ref-input">Description / Reference Remarks</label>
+              <input type="text" id="transfer-ref-input" class="form-control" placeholder="e.g. Cash deposit to Main Operating Account" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-transfer-funds')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Perform Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RECORD EXPENSE TRANSACTIONS MODAL -->
+  <div class="modal-overlay" id="modal-record-expense">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Record Expense Voucher</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-record-expense')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-record-expense" onsubmit="handleRecordExpenseSubmit(event)">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="expense-category-select">Expense Category</label>
+              <select id="expense-category-select" class="form-control form-select">
+                <option value="Rent Expense">Rent Expense</option>
+                <option value="Utilities Bill">Utilities Bill</option>
+                <option value="Office Supplies">Office Supplies</option>
+                <option value="Employee Salaries">Employee Salaries</option>
+                <option value="Advertising">Advertising / Marketing</option>
+                <option value="Miscellaneous">Miscellaneous Expense</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="expense-account-select">Payment Source Ledger</label>
+              <select id="expense-account-select" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="expense-amount-input">Amount Paid</label>
+              <input type="number" step="0.01" id="expense-amount-input" class="form-control" placeholder="0.00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="expense-date-input">Expense Date</label>
+              <input type="date" id="expense-date-input" class="form-control" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="expense-desc-input">Description Notes</label>
+              <input type="text" id="expense-desc-input" class="form-control" placeholder="e.g. Monthly cloud server billing" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-record-expense')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Log Expense</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MULTI-PURPOSE DOCUMENT CREATOR MODAL -->
+  <div class="modal-overlay" id="modal-create-document">
+    <div class="modal-content large">
+      <div class="modal-header">
+        <h3 class="modal-title" id="doc-modal-title-main">Create Document</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-create-document')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-create-document" onsubmit="handleCreateDocSubmit(event)">
+        <input type="hidden" id="doc-type-input-main" value="Quotation">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="doc-party-select-main" id="doc-party-label-main">Select Party</label>
+              <select id="doc-party-select-main" class="form-control form-select" required>
+                <!-- Loaded via JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="doc-date-input-main">Document Date</label>
+              <input type="date" id="doc-date-input-main" class="form-control" required>
+            </div>
+          </div>
+
+          <h4 style="margin-top:24px; margin-bottom:12px; font-size:14px; font-weight:700;">Line Items</h4>
+          
+          <table class="invoice-items-table">
+            <thead>
+              <tr>
+                <th style="width: 40%;">Product / Service</th>
+                <th style="width: 15%;">Unit Price</th>
+                <th style="width: 15%;">Quantity</th>
+                <th style="width: 15%;">Taxes</th>
+                <th style="width: 15%;">Total</th>
+                <th style="width: 50px;"></th>
+              </tr>
+            </thead>
+            <tbody id="doc-items-rows-main">
+              <!-- JS will inject rows here dynamically -->
+            </tbody>
+          </table>
+
+          <button type="button" class="table-btn" style="margin-bottom:20px;" onclick="addDocLineRow()">
+            <i data-lucide="plus" style="width:14px; height:14px; margin-right:4px;"></i> Add Row
+          </button>
+
+          <div class="invoice-totals-section">
+            <div class="invoice-totals-box">
+              <div class="totals-row">
+                <span>Sub Total:</span>
+                <span id="doc-sub-total-main">$0.00</span>
+              </div>
+              <div class="totals-row">
+                <span>Taxes Total:</span>
+                <span id="doc-tax-total-main">$0.00</span>
+              </div>
+              <div class="totals-row grand-total">
+                <span>Grand Total:</span>
+                <span id="doc-grand-total-main">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-create-document')">Cancel</button>
+          <button type="submit" class="quick-create-btn" id="doc-save-btn-label">Save Document</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <div class="mobile-bottom-nav">
+    <a href="index.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Home</span>
+    </a>
+    <a href="items.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="package"></i>
+      <span>Items</span>
+    </a>
+    <a href="sales-invoices.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="trending-up"></i>
+      <span>Sales</span>
+    </a>
+    <a href="accounts.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="wallet"></i>
+      <span>Accounts</span>
+    </a>
+    <a href="profile.html" class="mobile-bottom-nav-item ">
+      <i data-lucide="user"></i>
+      <span>Profile</span>
+    </a>
+  </div>
+</body>
+</html>

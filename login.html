@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acme Inc. - Premium Billing & Document Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <!-- ================= AUTHENTICATION VIEWS ================= -->
+  <div id="view-auth" class="view-container active">
+    <div class="auth-wrapper">
+      
+      <!-- LOGIN VIEW -->
+      <div id="auth-login" class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow</span>
+          </div>
+          <h2 class="auth-title">Welcome back</h2>
+          <p class="auth-subtitle">Welcome back! Please enter your details.</p>
+        </div>
+
+        <form id="form-login" onsubmit="handleLogin(event)">
+          <div class="auth-form-group">
+            <label class="auth-label" for="login-email">Email</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="mail"></i>
+              <input type="email" id="login-email" class="auth-input" placeholder="Enter your email" required value="admin@acme.com">
+            </div>
+          </div>
+          
+          <div class="auth-form-group">
+            <label class="auth-label" for="login-password">Password</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="lock"></i>
+              <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required value="password123">
+            </div>
+          </div>
+
+          <div class="auth-actions">
+            <label class="auth-checkbox">
+              <input type="checkbox" id="login-remember">
+              <span>Remember for 30 days</span>
+            </label>
+            <a href="#" class="auth-link" onclick="switchAuthView('auth-forgot')">Forgot password</a>
+          </div>
+
+          <button type="submit" class="auth-button">
+            Sign in
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <span>Don't have an account?</span>
+          <a href="#" class="auth-link" onclick="switchAuthView('auth-signup')">Sign up</a>
+        </div>
+      </div>
+
+      <!-- SIGN UP VIEW -->
+      <div id="auth-signup" class="auth-card" style="display:none;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow</span>
+          </div>
+          <h2 class="auth-title">Create an account</h2>
+          <p class="auth-subtitle">Start organizing your business accounting today.</p>
+        </div>
+
+        <form id="form-signup" onsubmit="handleSignup(event)">
+          <div class="auth-form-group">
+            <label class="auth-label" for="signup-name">Full Name</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="user"></i>
+              <input type="text" id="signup-name" class="auth-input" placeholder="Enter your name" required>
+            </div>
+          </div>
+
+          <div class="auth-form-group">
+            <label class="auth-label" for="signup-email">Email Address</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="mail"></i>
+              <input type="email" id="signup-email" class="auth-input" placeholder="Enter your email" required>
+            </div>
+          </div>
+          
+          <div class="auth-form-group">
+            <label class="auth-label" for="signup-password">Password</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="lock"></i>
+              <input type="password" id="signup-password" class="auth-input" placeholder="Create a password" required>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-button">
+            Get Started
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <span>Already have an account?</span>
+          <a href="#" class="auth-link" onclick="switchAuthView('auth-login')">Sign in</a>
+        </div>
+      </div>
+
+      <!-- FORGOT PASSWORD VIEW -->
+      <div id="auth-forgot" class="auth-card" style="display:none;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow</span>
+          </div>
+          <h2 class="auth-title">Forgot password?</h2>
+          <p class="auth-subtitle">No worries, we'll send you reset instructions.</p>
+        </div>
+
+        <form id="form-forgot" onsubmit="handleForgot(event)">
+          <div class="auth-form-group">
+            <label class="auth-label" for="forgot-email">Email Address</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="mail"></i>
+              <input type="email" id="forgot-email" class="auth-input" placeholder="Enter your email" required>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-button">
+            Reset Password
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <a href="#" class="auth-link" onclick="switchAuthView('auth-login')"><i data-lucide="arrow-left" style="width:14px; height:14px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> Back to Login</a>
+        </div>
+      </div>
+
+      <!-- OTP VERIFICATION VIEW -->
+      <div id="auth-otp" class="auth-card" style="display:none;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow</span>
+          </div>
+          <h2 class="auth-title">Verify OTP</h2>
+          <p class="auth-subtitle">We sent a 4-digit code to your email. Enter it below.</p>
+        </div>
+
+        <form id="form-otp" onsubmit="handleOtpVerify(event)">
+          <div class="otp-container">
+            <input type="text" maxlength="1" class="otp-field" required onkeyup="otpMove(this, 'otp2')" id="otp1">
+            <input type="text" maxlength="1" class="otp-field" required onkeyup="otpMove(this, 'otp3')" id="otp2">
+            <input type="text" maxlength="1" class="otp-field" required onkeyup="otpMove(this, 'otp4')" id="otp3">
+            <input type="text" maxlength="1" class="otp-field" required onkeyup="otpMove(this, null)" id="otp4">
+          </div>
+
+          <button type="submit" class="auth-button">
+            Confirm Verification
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <span>Didn't receive code?</span>
+          <a href="#" class="auth-link" onclick="resendOtp()">Resend OTP</a>
+        </div>
+      </div>
+
+      <!-- RESET PASSWORD VIEW -->
+      <div id="auth-reset" class="auth-card" style="display:none;">
+        <div class="auth-header">
+          <div class="auth-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            <span>BillFlow</span>
+          </div>
+          <h2 class="auth-title">Set new password</h2>
+          <p class="auth-subtitle">Must be at least 8 characters long.</p>
+        </div>
+
+        <form id="form-reset" onsubmit="handlePasswordReset(event)">
+          <div class="auth-form-group">
+            <label class="auth-label" for="reset-password">New Password</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="lock"></i>
+              <input type="password" id="reset-password" class="auth-input" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <div class="auth-form-group">
+            <label class="auth-label" for="reset-password-confirm">Confirm New Password</label>
+            <div class="auth-input-wrapper">
+              <i data-lucide="lock"></i>
+              <input type="password" id="reset-password-confirm" class="auth-input" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-button">
+            Update Password
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
