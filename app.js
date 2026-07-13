@@ -4,6 +4,7 @@
 
 const DEFAULT_STATE = {
   theme: "light",
+  sidebarCollapsed: false,
   currentUser: {
     name: "Admin Admin",
     email: "admin@acme.com",
@@ -2782,8 +2783,14 @@ function openQuickCreateModal() {
 }
 
 function toggleMobileSidebar() {
-  const sidebar = document.querySelector(".app-sidebar");
-  if (sidebar) sidebar.classList.toggle("open");
+  if (window.innerWidth <= 768) {
+    const sidebar = document.querySelector(".app-sidebar");
+    if (sidebar) sidebar.classList.toggle("open");
+  } else {
+    document.body.classList.toggle("sidebar-collapsed");
+    appState.sidebarCollapsed = document.body.classList.contains("sidebar-collapsed");
+    saveState();
+  }
 }
 
 // Click outside mobile sidebar to dismiss it
@@ -3199,6 +3206,10 @@ function handleTransferFundsPageSubmit(e) {
 // Initial Launch checks
 window.addEventListener("DOMContentLoaded", () => {
   initDatabase();
+  
+  if (appState.sidebarCollapsed) {
+    document.body.classList.add("sidebar-collapsed");
+  }
   
   const path = window.location.pathname.split('/').pop() || "index.html";
   

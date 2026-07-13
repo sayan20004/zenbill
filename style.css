@@ -640,6 +640,16 @@ input, select, textarea, button {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: var(--transition-smooth);
+}
+
+body.sidebar-collapsed .app-sidebar {
+  transform: translateX(-100%);
+  visibility: hidden;
+}
+
+body.sidebar-collapsed .app-content-wrapper {
+  margin-left: 0;
 }
 
 .app-header {
