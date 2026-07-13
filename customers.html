@@ -347,6 +347,54 @@
     </div>
   </div>
 
+  <!-- EDIT PARTY MODAL -->
+  <div class="modal-overlay" id="modal-edit-party">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="edit-party-modal-title">Edit Customer Profile</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-edit-party')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="form-edit-party" onsubmit="handleEditPartySubmit(event)">
+        <input type="hidden" id="edit-party-index">
+        <input type="hidden" id="edit-party-type">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label class="form-label" for="edit-party-name" id="edit-party-label-name">Customer Name</label>
+              <input type="text" id="edit-party-name" class="form-control" placeholder="Legal entity name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-party-email">Email Address</label>
+              <input type="email" id="edit-party-email" class="form-control" placeholder="billing@company.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="edit-party-phone">Phone Number</label>
+              <input type="tel" id="edit-party-phone" class="form-control" placeholder="10-digit mobile" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="edit-party-tax-id">Tax ID / GSTIN</label>
+              <input type="text" id="edit-party-tax-id" class="form-control" placeholder="e.g. 27AAAAA0000A1Z1" required>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="edit-party-address">Billing Address</label>
+              <textarea id="edit-party-address" class="form-control" style="height:60px; resize:none;" placeholder="Complete legal address for invoice display" required></textarea>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label" for="edit-party-balance">Opening Balance</label>
+              <input type="number" step="0.01" id="edit-party-balance" class="form-control" placeholder="0.00" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="table-btn" onclick="closeModal('modal-edit-party')">Cancel</button>
+          <button type="submit" class="quick-create-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- SALES INVOICE CREATOR MODAL -->
   <div class="modal-overlay" id="modal-create-invoice">
     <div class="modal-content large">
