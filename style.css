@@ -574,8 +574,14 @@ input, select, textarea, button {
 }
 
 .submenu-link.active {
-  color: var(--primary);
-  font-weight: 700;
+  background-color: var(--primary);
+  color: var(--text-white) !important;
+  font-weight: 600;
+}
+
+.submenu-link.active:hover {
+  background-color: var(--primary-hover);
+  color: var(--text-white) !important;
 }
 
 /* Sidebar Footer (User details / Logout) */
