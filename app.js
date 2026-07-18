@@ -592,6 +592,8 @@ function bootMainApp() {
     renderActivityLogsTable();
   } else if (filename === "create-quotation.html") {
     initCreateQuotationPage();
+  } else if (filename === "create-proforma.html") {
+    initCreateProformaPage();
   } else if (filename === "adjust-stock.html") {
     initAdjustStockPage();
   } else if (filename === "add-account.html") {
@@ -3299,6 +3301,175 @@ function handleEditAccountSubmit(e) {
   }
 
   // ==========================================
+  // DEDICATED CREATE PROFORMA PAGE CONTROLLERS
+  // ==========================================
+
+  function initCreateProformaPage() {
+    const select = document.getElementById("create-proforma-customer-select");
+    if (!select) return;
+    select.innerHTML = "";
+
+    const customers = appState.parties.filter(p => p.type === "Customer");
+    if (customers.length === 0) {
+      triggerToast("Create a Customer profile first before generating proformas", "warning");
+      setTimeout(() => {
+        window.location.href = "customers.html";
+      }, 1500);
+      return;
+    }
+
+    customers.forEach(cust => {
+      const opt = document.createElement("option");
+      opt.value = cust.name;
+      opt.textContent = cust.name;
+      select.appendChild(opt);
+    });
+
+    document.getElementById("create-proforma-date-input").value = new Date().toISOString().split('T')[0];
+    document.getElementById("create-proforma-items-rows").innerHTML = "";
+    addCreateProformaLineRow();
+    calculateCreateProformaTotals();
+  }
+
+  function addCreateProformaLineRow() {
+    const tbody = document.getElementById("create-proforma-items-rows");
+    if (!tbody) return;
+    const tr = document.createElement("tr");
+
+    let options = `<option value="" disabled selected>Choose Item</option>`;
+    appState.items.forEach(item => {
+      options += `<option value="${item.name}">${item.name}</option>`;
+    });
+
+    tr.innerHTML = `
+    <td>
+      <select class="form-control form-select create-proforma-item-select" onchange="handleCreateProformaLineItemSelect(this)" required>
+        ${options}
+      </select>
+    </td>
+    <td>
+      <input type="number" step="0.01" class="form-control create-proforma-price-control" value="0.00" oninput="calculateCreateProformaTotals()" required>
+    </td>
+    <td>
+      <input type="number" class="form-control create-proforma-qty-control" value="1" min="1" oninput="calculateCreateProformaTotals()" required>
+    </td>
+    <td>
+      <select class="form-control form-select create-proforma-tax-control" onchange="calculateCreateProformaTotals()">
+        <option value="18">18% GST</option>
+        <option value="12">12% GST</option>
+        <option value="5">5% GST</option>
+        <option value="0">0% Exempt</option>
+      </select>
+    </td>
+    <td style="font-weight:600; text-align:right;" class="create-proforma-row-total-cell">$0.00</td>
+    <td>
+      <button type="button" class="action-menu-btn" onclick="this.closest('tr').remove(); calculateCreateProformaTotals();">
+        <i data-lucide="minus-circle" style="width:14px; height:14px; stroke:var(--danger-text);"></i>
+      </button>
+    </td>
+  `;
+
+    tbody.appendChild(tr);
+    lucide.createIcons();
+  }
+
+  function handleCreateProformaLineItemSelect(selectEl) {
+    const itemName = selectEl.value;
+    const itemObj = appState.items.find(i => i.name === itemName);
+    if (!itemObj) return;
+
+    const row = selectEl.closest("tr");
+    row.querySelector(".create-proforma-price-control").value = itemObj.salesPrice.toFixed(2);
+    calculateCreateProformaTotals();
+  }
+
+  function calculateCreateProformaTotals() {
+    const rows = document.querySelectorAll("#create-proforma-items-rows tr");
+    let subTotal = 0;
+    let taxTotal = 0;
+
+    const activeCompany = appState.companies[appState.activeCompanyIndex];
+    const curSymbol = activeCompany.currency === "INR" ? "₹" : "$";
+
+    rows.forEach(row => {
+      const price = parseFloat(row.querySelector(".create-proforma-price-control").value) || 0;
+      const qty = parseInt(row.querySelector(".create-proforma-qty-control").value) || 0;
+      const taxRate = parseFloat(row.querySelector(".create-proforma-tax-control").value) || 0;
+
+      const rowSub = price * qty;
+      const rowTax = rowSub * (taxRate / 100);
+      const rowTotal = rowSub + rowTax;
+
+      row.querySelector(".create-proforma-row-total-cell").textContent = `${curSymbol}${rowTotal.toFixed(2)}`;
+      subTotal += rowSub;
+      taxTotal += rowTax;
+    });
+
+    const grandTotal = subTotal + taxTotal;
+    document.getElementById("create-proforma-sub-total").textContent = `${curSymbol}${subTotal.toFixed(2)}`;
+    document.getElementById("create-proforma-tax-total").textContent = `${curSymbol}${taxTotal.toFixed(2)}`;
+    document.getElementById("create-proforma-grand-total").textContent = `${curSymbol}${grandTotal.toFixed(2)}`;
+
+    return { subTotal, taxTotal, grandTotal };
+  }
+
+  function handleCreateProformaSubmit(e) {
+    e.preventDefault();
+
+    const customerName = document.getElementById("create-proforma-customer-select").value;
+    const date = document.getElementById("create-proforma-date-input").value;
+
+    const rows = document.querySelectorAll("#create-proforma-items-rows tr");
+    if (rows.length === 0) {
+      triggerToast("Proforma Invoice requires at least one item row", "error");
+      return;
+    }
+
+    const { subTotal, taxTotal, grandTotal } = calculateCreateProformaTotals();
+    const lineItems = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const itemName = row.querySelector(".create-proforma-item-select").value;
+      const price = parseFloat(row.querySelector(".create-proforma-price-control").value) || 0;
+      const qty = parseInt(row.querySelector(".create-proforma-qty-control").value) || 0;
+      const taxRate = parseFloat(row.querySelector(".create-proforma-tax-control").value) || 0;
+
+      if (!itemName) {
+        triggerToast("Complete item selections before saving", "error");
+        return;
+      }
+
+      lineItems.push({ itemName, price, qty, taxRate, total: (price * qty * (1 + taxRate / 100)) });
+    }
+
+    const proformaId = `PFM-${appState.docCounter}`;
+    appState.docCounter++;
+
+    const newProforma = {
+      id: proformaId,
+      partyName: customerName,
+      date,
+      subTotal,
+      taxTotal,
+      grandTotal,
+      status: "Pending",
+      items: lineItems
+    };
+
+    if (!appState.proformas) appState.proformas = [];
+    appState.proformas.unshift(newProforma);
+    saveState();
+
+    logActivity(`Generated Proforma Invoice: ${proformaId}`);
+    triggerToast(`Proforma Invoice ${proformaId} saved successfully`, "success");
+
+    setTimeout(() => {
+      window.location.href = "proformas.html";
+    }, 1000);
+  }
+
+  // ==========================================
   // DEDICATED STOCK ADJUSTMENT PAGE CONTROLLERS
   // ==========================================
 
@@ -3631,6 +3802,7 @@ function updateDocumentTitle() {
     "add-account.html": "Add Ledger Account",
     "transfer-funds.html": "Transfer Funds",
     "create-quotation.html": "Create Quotation",
+    "create-proforma.html": "Create Proforma",
     "adjust-stock.html": "Adjust Stock"
   };
 
